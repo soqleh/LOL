@@ -70,27 +70,52 @@ public class Game {
         attackTo.setHp(nowHp);
         System.out.println("attackTo.getHp():" + attackTo.getHp() + ", attackFrom.getAd(): " + attackFrom.getAd()
         + ", attackTo.getDef(): " + attackTo.getDef());
-        System.out.printf("%s %s 캐릭터의 남은 체력은 %d 입니다.. \n\n", callFrom, attackTo.getName(), attackTo.getHp());
     }
     //play
     private synchronized void attack(Character attackFrom, Character attackTo) {
         while(attackFrom.getHp() > 0 && attackTo.getHp()>0) {
             calculateHp("[T]", attackFrom,attackTo);
         }
+
         System.out.printf("[T]%s 캐릭터가 제거되었습니다. \n\n", attackTo.getName());
+/*        if(attackFrom.getHp() > 0 && attackTo.getHp()>0)
+            calculateHp("[T]", attackFrom,attackTo);
+        else
+            System.out.printf("[T]%s 캐릭터가 제거되었습니다. \n\n", attackTo.getName());*/
     }
     public void fight(){
-        Thread my = new AttackThread();
-        my.start();
-        Thread other = new AttackThread();
-        other.start();
-    }
-    class AttackThread extends Thread {
         Character my = characters.getCharacterById(characterId[MY]);
         Character other = characters.getCharacterById(characterId[OTHER]);
-        public void run() {
-            attack(other, my);
-        }
+        Runnable AttackFromMe = () -> {
+            try {
+                attack(my, other);
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                System.out.println("InterruptedException");
+            }
+        };
+        Runnable AttackFromOther = () -> {
+            try {
+                attack(other, my);
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                System.out.println("InterruptedException");
+            }
+        };
+        Thread t1 = new Thread(AttackFromMe);
+        Thread t2 = new Thread(AttackFromMe);
+        t1.start();
+        t2.start();
+//        Thread my = new AttackThread();
+//        my.start();
+//        Thread other = new AttackThread();
+//        other.start();
     }
-    //게임 결과 출력
+//    class AttackThread extends Thread {
+//        Character my = characters.getCharacterById(characterId[MY]);
+//        Character other = characters.getCharacterById(characterId[OTHER]);
+//        public void run() {
+//            attack(other, my);
+//        }
+//    }
 }
