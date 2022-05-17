@@ -61,7 +61,7 @@ public class Game {
     private void showSelectedCharacters() {
         Character my = characters.getCharacterById(characterId[MY]);
         Character other = characters.getCharacterById(characterId[OTHER]);
-        System.out.printf("게임을 시작합니다. %s vs %s\n", my.getName(), other.getName());
+        System.out.printf("게임을 시작합니다. %s vs %s\n\n", my.getName(), other.getName());
         System.out.println("-".repeat(50));
     }
     private synchronized void calculateHp(String callFrom, Character attackFrom, Character attackTo){
@@ -70,29 +70,31 @@ public class Game {
         attackTo.setHp(nowHp);
         System.out.println("attackTo.getHp():" + attackTo.getHp() + ", attackFrom.getAd(): " + attackFrom.getAd()
         + ", attackTo.getDef(): " + attackTo.getDef());
-        System.out.printf("%s %s 캐릭터의 남은 체력은 %d 입니다.. \n", callFrom, attackTo.getName(), attackTo.getHp());
+        System.out.printf("%s %s 캐릭터의 남은 체력은 %d 입니다.. \n\n", callFrom, attackTo.getName(), attackTo.getHp());
     }
     //play
     private synchronized void attack_call_from_main(Character attackFrom, Character attackTo) {
         while(attackFrom.getHp() > 0 && attackTo.getHp()>0) {
             calculateHp("[M]", attackFrom,attackTo);
         }
-        System.out.printf("[M]% 캐릭터가 제거되었습니다. \n", attackTo.getName());
+        System.out.printf("[M]% 캐릭터가 제거되었습니다. \n\n", attackTo.getName());
     }
     private synchronized void attack_call_from_thread(Character attackFrom, Character attackTo) {
         while(attackFrom.getHp() > 0 && attackTo.getHp()>0) {
             calculateHp("[T]", attackFrom,attackTo);
         }
-        System.out.printf("[T]% 캐릭터가 제거되었습니다. \n", attackTo.getName());
+        System.out.printf("[T]%s 캐릭터가 제거되었습니다. \n\n", attackTo.getName());
     }
     public void fight(){
-        Character my = characters.getCharacterById(characterId[MY]);
-        Character other = characters.getCharacterById(characterId[OTHER]);
-        attack_call_from_main(my, other);
-        Thread t = new OthersThread();
-        t.start();
+//        Character my = characters.getCharacterById(characterId[MY]);
+//        Character other = characters.getCharacterById(characterId[OTHER]);
+//        attack_call_from_main(my, other);
+        Thread my = new AttackThread();
+        my.start();
+        Thread other = new AttackThread();
+        other.start();
     }
-    class OthersThread extends Thread {
+    class AttackThread extends Thread {
         Character my = characters.getCharacterById(characterId[MY]);
         Character other = characters.getCharacterById(characterId[OTHER]);
         public void run() {
