@@ -103,7 +103,7 @@ public class Game {
             }
         };
         Thread t1 = new Thread(AttackFromMe);
-        Thread t2 = new Thread(AttackFromMe);
+        Thread t2 = new Thread(AttackFromOther);
         t1.start();
         t2.start();
 //        Thread my = new AttackThread();
