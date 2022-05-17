@@ -73,22 +73,13 @@ public class Game {
         System.out.printf("%s %s 캐릭터의 남은 체력은 %d 입니다.. \n\n", callFrom, attackTo.getName(), attackTo.getHp());
     }
     //play
-    private synchronized void attack_call_from_main(Character attackFrom, Character attackTo) {
-        while(attackFrom.getHp() > 0 && attackTo.getHp()>0) {
-            calculateHp("[M]", attackFrom,attackTo);
-        }
-        System.out.printf("[M]% 캐릭터가 제거되었습니다. \n\n", attackTo.getName());
-    }
-    private synchronized void attack_call_from_thread(Character attackFrom, Character attackTo) {
+    private synchronized void attack(Character attackFrom, Character attackTo) {
         while(attackFrom.getHp() > 0 && attackTo.getHp()>0) {
             calculateHp("[T]", attackFrom,attackTo);
         }
         System.out.printf("[T]%s 캐릭터가 제거되었습니다. \n\n", attackTo.getName());
     }
     public void fight(){
-//        Character my = characters.getCharacterById(characterId[MY]);
-//        Character other = characters.getCharacterById(characterId[OTHER]);
-//        attack_call_from_main(my, other);
         Thread my = new AttackThread();
         my.start();
         Thread other = new AttackThread();
@@ -98,10 +89,7 @@ public class Game {
         Character my = characters.getCharacterById(characterId[MY]);
         Character other = characters.getCharacterById(characterId[OTHER]);
         public void run() {
-//            while(other.getHp() > 0 && my.getHp()>0) {
-//                calculateHp(other, my);
-//            }
-            attack_call_from_thread(other, my);
+            attack(other, my);
         }
     }
     //게임 결과 출력
