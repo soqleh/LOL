@@ -6,6 +6,10 @@ public class Game {
     public static final int MY = 0;
     public static final int OTHER = 1;
 
+    public Character myCharactor;
+    public Character userCharactor;
+
+
 
     Game() {
         createCharacters();
@@ -86,36 +90,63 @@ public class Game {
     public void fight(){
         Character my = characters.getCharacterById(characterId[MY]);
         Character other = characters.getCharacterById(characterId[OTHER]);
-        Runnable AttackFromMe = () -> {
-            try {
-                attack(my, other);
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                System.out.println("InterruptedException");
-            }
-        };
-        Runnable AttackFromOther = () -> {
-            try {
-                attack(other, my);
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                System.out.println("InterruptedException");
-            }
-        };
-        Thread t1 = new Thread(AttackFromMe);
-        Thread t2 = new Thread(AttackFromOther);
-        t1.start();
-        t2.start();
+//        Runnable AttackFromMe = () -> {
+//            try {
+//                attack(my, other);
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//                System.out.println("InterruptedException");
+//            }
+//        };
+//        Runnable AttackFromOther = () -> {
+//            try {
+//                attack(other, my);
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//                System.out.println("InterruptedException");
+//            }
+//        };
+//        Thread t1 = new Thread(AttackFromMe);
+//        Thread t2 = new Thread(AttackFromOther);
+//        t1.start();
+//        t2.start();
 //        Thread my = new AttackThread();
 //        my.start();
 //        Thread other = new AttackThread();
 //        other.start();
+        AttackThread tMyAttack = new AttackThread("MyAttack", my, other);
+        tMyAttack.start();
+        AttackThread tOtherAttack = new AttackThread("OthersAttack", other, my);
+        tOtherAttack.start();
     }
-//    class AttackThread extends Thread {
-//        Character my = characters.getCharacterById(characterId[MY]);
-//        Character other = characters.getCharacterById(characterId[OTHER]);
-//        public void run() {
-//            attack(other, my);
-//        }
-//    }
+    class AttackThread extends Thread {
+        private Thread t;
+        private String threadName;
+        Character attackFrom;
+        Character attackTo;
+        AttackThread(String name, Character attackFrom, Character attackTo) {
+            threadName = name;
+            System.out.println("Create " + name);
+            this.attackFrom = attackFrom;
+            this.attackTo = attackTo;
+        }
+        public void start() {
+            System.out.println("Starting " + threadName);
+            if (t == null) {
+                t = new Thread (this, threadName);
+                t.start ();
+            }
+        }
+        public void run() {
+            try {
+                while(attackFrom.getHp() > 0 && attackTo.getHp()>0) {
+                    calculateHp("[" + threadName + "]", attackFrom,attackTo);
+                    Thread.sleep(50);
+                }
+            } catch (InterruptedException e) {
+                System.out.println("Thread " +  threadName + " interrupted.");
+            }
+            System.out.println("Thread " +  threadName + " exiting.");
+        }
+    }
 }
