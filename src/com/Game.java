@@ -50,14 +50,41 @@ public class Game {
     public void selectCharacter() {
         try {
             Scanner sc = new Scanner(System.in);
-            System.out.println(" 나의 게임 캐릭터를 선택해 주세요. (번호 입력): ");
-            int my = sc.nextInt();
-            System.out.println(" 상대의 게임 캐릭터를 선택해 주세요. (번호 입력): ");
-            int other = sc.nextInt();
+            int my;
+            int other;
+            while(true) {
+                boolean wrongRange = false;
+                System.out.println("나의 게임 캐릭터를 선택해 주세요. (번호 입력): ");
+                if(sc.hasNextInt()){
+                    my = sc.nextInt();
+                    if(my > 0 && my <= charactersList.getCharacterNumbers())
+                        break;
+                    else
+                        wrongRange = true;
+                }
+                if(wrongRange || sc.hasNextInt()) {
+                    System.out.println("잘못된 입력 범위입니다.");
+                    wrongRange = false;
+                }
+            }
+            while(true) {
+                boolean wrongRange = false;
+                System.out.println("상대의 게임 캐릭터를 선택해 주세요. (번호 입력): ");
+                if(sc.hasNextInt()){
+                    other = sc.nextInt();
+                    if(other > 0 && other <= charactersList.getCharacterNumbers())
+                        break;
+                    else
+                        wrongRange = true;
+                }
+                if(wrongRange || sc.hasNextInt()) {
+                    System.out.println("잘못된 입력 범위입니다.");
+                    wrongRange = false;
+                }
+            }
             sc.close();
             characterId[MY] = my;
             characterId[OTHER] = other;
-            //TODO: 입력 예외 처리 추가 필요
 
         } catch (Exception e) {
             System.out.println("잘못 입력하셨습니다. 다시 입력해주세요.");
